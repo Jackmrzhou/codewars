@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 class BestTravel
 {
 public:
@@ -9,26 +8,42 @@ public:
 int main(void)
 {
     std::vector<int> ts = {50, 55, 56, 57, 58};
-    int n = BestTravel::chooseBestSum(163, 3, ts);
+    int n = BestTravel::chooseBestSum(163, 1, ts);
     std::cout << n << std::endl;
     return 0;
 }
 int BestTravel::chooseBestSum(int t, int k, std::vector<int>& ls)
 {
-    if (k > (int)ls.size())
+    if(k > int(ls.size()))
         return -1;
-    sort(ls.begin(), ls.end());
-    int sum{},m{},temp{};
-    while (temp <= t)
+    std::vector<int> stack{};
+    int temp{},count{},result{};
+    for (int i = 0; i != k;++i)
     {
-        sum = temp;
-        temp = 0;
-        for (int i(0); i != k;++i)
-            temp += ls[i+m];
-        if (m < (int)ls.size()-k)
-            ++m;
-        else
-            break;
+        stack.push_back(i);
+        result += ls[i];
     }
-    return sum ;
+    result = result <= t ? result : 0;
+    while(stack[0] != (int)ls.size()-k)
+    {
+        int sum{};
+        do{
+            count += 1;
+            temp = *(stack.end() - 1);
+            stack.pop_back();
+        }while(temp >= (int)ls.size()-count);
+        int i(1);
+        while(count > 0)
+        {
+            stack.push_back(temp + i);
+            ++i;
+            count--;
+        }
+        for (auto e:stack)
+            sum += ls[e];
+        if(sum <= t && sum > result){
+            result = sum;
+        }
+    }
+    return result == 0 ? -1 : result;
 }
