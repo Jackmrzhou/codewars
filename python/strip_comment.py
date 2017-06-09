@@ -1,9 +1,6 @@
+import re
 def solution(string,markers):
-	new = []
-	temp = list(string)
-	start, end = 0,0
-	for index, ch in enumerate(temp):
-		if ch not in markers:
-			end += 1
-	return new
-
+	markers = r'|'.join(re.escape(marker) for marker in markers)
+    words = [re.split(markers, word)[0].rstrip() for word in text.split('\n')]
+    return '\n'.join(words)
+print( solution('pears apples , watermelons\n? , avocados strawberries cherries lemons\navocados watermelons watermelons\nlemons\nbananas pears apples .', ["'", '?', '-', '#', '=', '!', '@', '^', '.']))
