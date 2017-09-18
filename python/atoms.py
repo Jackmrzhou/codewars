@@ -9,6 +9,7 @@ def parse_molecule (formula):
 		while k < len(formula) and formula[k].isdigit():
 			tmp = int(formula[k]) + tmp * 10
 			k += 1
+		tmp = tmp if tmp>0 else 1
 		formula = formula.replace(formula[i:d[i]+k-d[i]],formula[i+1:d[i]]*tmp)
 		parse(formula, d)
 	tmp = []
@@ -16,20 +17,33 @@ def parse_molecule (formula):
 	res = {}
 	for ch in formula:
 		if ch.islower():
-			
-		if not ch.isdigit():
+			tmp.append(tmp.pop() + ch)
+		elif not ch.isdigit():
+			if len(tmp)==0:
+				tmp.append(ch)
+				continue
+			else:pre = tmp.pop()
 			try:
-				res[ch] += 1
+				res[pre] += 1
 			except:
-				res[ch] = 1
+				res[pre] = 1
 			if tmp_ != 0:
-				res[tmp.pop()] += tmp_ -1
+				res[pre] += tmp_ -1
 				tmp_ = 0
 			tmp.append(ch)
 		else:
 			tmp_ = int(ch) + tmp_*10
+	pre = tmp.pop()
 	if tmp_:
-		res[tmp.pop()] += tmp_ -1
+		try:
+			res[pre] += tmp_
+		except:
+			res[pre] = tmp_
+	else:
+		try:
+			res[pre] += 1
+		except:
+			res[pre] = 1
 	return res
 
 def parse(formula, d):
@@ -41,4 +55,5 @@ def parse(formula, d):
 			d[brac.pop()] = i
 	return d
 if __name__ == '__main__':
-	parse_molecule("K4[ON(SO3)2]2")
+	print(parse_molecule("{[Co(NH3)4(OH)2]3Co}(SO4)3"))
+	parse_molecule("Mg4[ON(SO3)2]2")
